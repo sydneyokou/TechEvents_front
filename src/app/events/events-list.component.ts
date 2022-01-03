@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { EventService } from './shared/events.service';
-import { ActivatedRoute } from '@angular/router';
-import { IEvent } from './shared';
+import { Component, OnInit } from "@angular/core";
+import { EventService } from "./shared/event.service";
+import { IEvent } from "./shared/event.model";
 
 @Component({
-    templateUrl: './events-list.component.html'
+  templateUrl: "./events-list.component.html"
 })
-
 export class EventsListComponent implements OnInit {
-    events: IEvent[];
+  events: IEvent[];
+  constructor(private eventService: EventService) {}
 
-    constructor(private eventService: EventService, private route: ActivatedRoute ) {
-
-    }
-
-    ngOnInit() {
-        this.events = this.route.snapshot.data['events']
-    }
+  //the ngOnInit method is called when the component is loaded
+  ngOnInit() {
+    this.events = this.eventService.getEvents();
+  }
 }

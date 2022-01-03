@@ -1,18 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from './user/auth.service';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'events-app',
+  selector: "events-app",
   template: `
     <nav-bar></nav-bar>
     <router-outlet></router-outlet>
   `
 })
-
-export class EventsAppComponent implements OnInit {
-  constructor(private auth: AuthService) {}
-
-  ngOnInit() {
-    this.auth.checkAuthenticationStatus();
-  }
+export class EventsAppComponent {
+  title = "CodeSandbox";
 }

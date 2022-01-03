@@ -1,49 +1,60 @@
-import { Component } from '@angular/core';
-import {EventService} from '../shared/events.service';
-import {ActivatedRoute, Params} from '@angular/router';
-import { IEvent, ISession } from '../shared';
+import { Component, OnInit } from "@angular/core";
+import { EventService } from "../shared/event.service";
+import { ActivatedRoute, Params } from "@angular/router";
+import { IEvent, ISession } from "../shared/index";
 
 @Component({
-  templateUrl: './event-details.component.html',
-  styleUrls: ['./event-details.component.css']
+  templateUrl: "./event-details.component.html",
+  styles: [
+    `
+      .container {
+        padding-left: 2;
+        padding-right: 20px;
+      }
+      .event-image {
+        height: 100px;
+      }
+      a {
+        cursor: pointer;
+      }
+    `
+  ]
 })
-
-export class EventDetailsComponent {
+export class EventDetailsComponent implements OnInit {
   event: IEvent;
   addMode: boolean;
-  filterBy: string = 'all';
-  sortBy: string = 'votes';
+  filterBy: string = "all";
+  sortBy: string = "votes";
 
-  constructor(private eventService: EventService, private route: ActivatedRoute) {
-
-  }
-
+  constructor(
+    private eventService: EventService,
+    private route: ActivatedRoute
+  ) {}
   ngOnInit() {
-    // Subscribe to the params to check for re-routes to the same component.
-    // When the route to self is called, we need to reset all component states to original.
-    this.route.data.forEach((data) => {
-        this.event = data['event'];
-        this.resetState();
+    this.route.params.forEach((params: Params) => {
+      this.event = this.eventService.getEvent(+params["id"]);
+      this.addMode = false;
     });
+    //the "+" cast a string to a number
   }
 
   addSession() {
-    this.addMode = true
+    this.addMode = true;
   }
 
-  saveNewSession(session:ISession) {
-    const nextId = Math.max.apply(null, this.event.sessions.map(s => s.id));
-    session.id = nextId + 1
-    this.event.sessions.push(session)
-    this.eventService.saveEvent(this.event).subscribe();
-    this.addMode = false
+  saveNewSession(session: ISession) {
+    const lastId = Math.max.apply(
+      null,
+      this.event.sessions.map((s) => s.id)
+    );
+    session.id = lastId + 1;
+    this.event.sessions.push(session);
+    this.eventService.updateEvent(this.event);
+
+    this.addMode = false;
   }
 
   cancelAddSession() {
-    this.addMode = false
-  }
-
-  resetState() {
     this.addMode = false;
   }
 }

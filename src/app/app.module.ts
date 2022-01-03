@@ -1,5 +1,8 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+
 
 import {
   EventsListComponent,
@@ -7,78 +10,68 @@ import {
   EventService,
   EventDetailsComponent,
   CreateEventComponent,
-  //Refer to comment in EventRouteActivator 
-  //EventRouteActivator,
-  EventListResolver,
-  EventResolver,
+  EventRouteActivator,
   CreateSessionComponent,
   SessionListComponent,
-  DurationPipe,
-  UpvoteComponent,
-  VoterService,
-  LocationValidator
-} from './events/index'
+  DurationPipe
+} from "./events/index";
+import { EventsAppComponent } from "./events-app.component";
+import { NavBarComponent } from "./nav/navbar.component";
+import { TOASTR_TOKEN, Toastr } from "./common/toastr.service";
+import { JQ_TOKEN } from "./common/jQuery.service";
+import { CollapsibleWellComponent } from "./common/collapsible-well.component";
+import { SimpleModalComponent } from "./common/simpleModal.component";
+import { ModalTriggerDirective } from "./common/modalTrigger.directive";
+import { appRoutes } from "./routes";
+import { Error404Component } from "./errors/404.component";
+import { AuthService } from "./user/auth.service";
 
-import { EventsAppComponent } from './events-app.component';
-import { NavBarComponent } from './nav/navbar.component';
-import { RouterModule } from '@angular/router';
-import { appRoutes } from './routes';
-import { Error404Component } from './errors/404.component';
-import { AuthService } from './user/auth.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CollapsibleWellComponent } from './common/collapsible-well/collapsible-well.component';
-import { Toastr, TOASTR_TOKEN, JQ_TOKEN, SimpleModalComponent, ModalTriggerDirective } from './common';
-import { HttpClientModule } from '@angular/common/http';
+export function checkDirtyState(component: CreateEventComponent) {
+  if (component.isDirty) {
+    return window.confirm(
+      "You have not saved this event, do you really want to cancel ?"
+    );
+  } else {
+    return true;
+  }
+}
 
-let toastr: Toastr = window['toastr'];
-let jQuery: Object = window['$'];
+let toastr: Toastr = window["toastr"];
+let jQuery = window["$"];
 
 @NgModule({
-  // Other Modules
   imports: [
     BrowserModule,
+    RouterModule.forRoot(appRoutes),
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes),
-    HttpClientModule
+    
   ],
-  // Component, Pipe or Directive
   declarations: [
     EventsAppComponent,
     EventsListComponent,
     EventThumbnailComponent,
-    EventDetailsComponent,
-    CreateSessionComponent,
     NavBarComponent,
+    EventDetailsComponent,
     CreateEventComponent,
     Error404Component,
+    CreateSessionComponent,
     SessionListComponent,
     CollapsibleWellComponent,
-    SimpleModalComponent,
-    UpvoteComponent,
     DurationPipe,
-    ModalTriggerDirective,
-    LocationValidator
+    SimpleModalComponent,
+    ModalTriggerDirective
   ],
-  // Services
   providers: [
+    
     EventService,
-    { provide: JQ_TOKEN, useValue: jQuery },
     { provide: TOASTR_TOKEN, useValue: toastr },
-    //EventRouteActivator,
-    AuthService,
-    { provide: 'canDeactivateCreateEvent', useValue: checkDirtyState },
-    EventResolver,
-    EventListResolver,
-    VoterService
+    { provide: JQ_TOKEN, useValue: jQuery },
+    EventRouteActivator,
+    { provide: "canDeactivateCreateEvent", useValue: checkDirtyState },
+    AuthService //the detailed equivalent syntax for this would be = {provide: AuthService, useClass: AuthService}
+    // Many services providers exist : useValue, useClass like above.. but also useExisting , useFactory...
   ],
   bootstrap: [EventsAppComponent]
 })
-export class AppModule { }
-
-export function checkDirtyState(component: CreateEventComponent) {
-  if(component.isDirty) {
-    return window.confirm('You have not saved this event, are you sure you wish to cancel?')
-  }
-  return true
-}
+export class AppModule {}
