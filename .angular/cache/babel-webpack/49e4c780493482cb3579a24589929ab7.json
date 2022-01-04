@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { InjectionToken } from \"@angular/core\";\nexport var JQ_TOKEN = new InjectionToken(\"jQuery\");","map":null,"metadata":{},"sourceType":"module"}
