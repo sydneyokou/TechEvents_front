@@ -3,11 +3,16 @@ import { JQ_TOKEN } from "./jQuery.service";
 @Component({
   selector: "simple-modal",
   template: `
-    <div id="{{ elementId }}" #modalcontainer class="modal" tabindex="-1" >
+    <div id="{{ elementId }}" #modalcontainer class="modal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-bs-dismiss="modal"aria-label="Close" (click)="close()">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              (click)="close()"
+            >
               <span>&times;</span>
             </button>
             <h4 class="modal-title">{{ title }}</h4>
@@ -20,13 +25,11 @@ import { JQ_TOKEN } from "./jQuery.service";
     </div>
   `,
   styles: [
-    ` 
+    `
       .modal-body {
         height: 250px;
         overflow-y: scroll;
       }
-
-      
     `
   ]
 })
@@ -44,7 +47,7 @@ export class SimpleModalComponent {
     }
   }
 
-  close(){
+  close() {
     this.$(this.containerEl.nativeElement).hide();
   }
 }
