@@ -32,7 +32,7 @@ export class EventDetailsComponent implements OnInit {
   ) {}
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
-      this.event = this.eventService.getEvent(+params["id"]);
+      this.eventService.getEvent(params["id"]).subscribe((response => this.event = response));
       this.addMode = false;
     });
     //the "+" cast a string to a number
@@ -43,13 +43,19 @@ export class EventDetailsComponent implements OnInit {
   }
 
   saveNewSession(session: ISession) {
-    const lastId = Math.max.apply(
-      null,
-      this.event.sessions.map((s) => s.id)
-    );
-    session.id = lastId + 1;
-    this.event.sessions.push(session);
-    this.eventService.updateEvent(this.event);
+    if(this.event.sessions != null){
+      const lastId = Math.max.apply(
+        null,
+        this.event.sessions.map((s) => s.id)
+      );
+      session.id = lastId + 1;
+      this.event.sessions.push(session);
+    } else {
+      session.id = 1;
+      this.event.sessions = [session];
+    }
+    
+    this.eventService.updateEvent(this.event).subscribe(response => {console.log(response)}, (error) => alert(error.message));
 
     this.addMode = false;
   }

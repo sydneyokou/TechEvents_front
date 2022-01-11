@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component} from "@angular/core";
 import { AuthService } from "../user/auth.service";
 import { ISession } from "../events/shared/event.model";
 import { EventService } from "../events/shared/event.service";
@@ -39,4 +39,8 @@ export class NavBarComponent {
       console.log(this.foundSessions);
     });
   }
+
+
+ 
 }
+
