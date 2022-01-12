@@ -1,6 +1,7 @@
-# NgFundamentals
+# TechEvents_front
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.14
+It is the front part of a web app to create and consult tech events
 
 ## Development server
 
