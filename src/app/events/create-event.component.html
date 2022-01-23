@@ -92,7 +92,7 @@
           >You must enter either the full location OR an online Url</em
         >
         <input
-          (ngModel)="newEvent.address"
+          (ngModel)="newEvent.location.address"
           name="address"
           id="address"
           type="text"
@@ -103,7 +103,7 @@
       <div class="row">
         <div class="col-md-6">
           <input
-            (ngModel)="newEvent.city"
+            (ngModel)="newEvent.location.city"
             name="city"
             id="city"
             type="text"
@@ -113,7 +113,7 @@
         </div>
         <div class="col-md-6">
           <input
-            (ngModel)="newEvent.country"
+            (ngModel)="newEvent.location.country"
             name="country"
             id="country"
             type="text"
