@@ -12,13 +12,18 @@ export class EventsListComponent implements OnInit {
   constructor(private eventService: EventService) {}
 
   //the ngOnInit method is called when the component is loaded
-  ngOnInit() {
-    this.loadEvents();
+  async ngOnInit() {
+    await this.loadEvents();
   }
 
   loadEvents(){
-    this.eventService.getEvents().subscribe(
-      (response) => {this.events = response}, 
-      (error)=> {alert(error.message)});
+    return new Promise<void>((resolve, reject) => {
+      this.eventService.getEvents().subscribe(
+        (response) => {this.events = response; resolve();}, 
+        (error)=> {alert(error.message);  resolve();});
+       
+
+    })
+    
   }
 }

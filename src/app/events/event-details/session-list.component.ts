@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { ISession } from "../shared/index";
+import { ISession, IEvent } from "../shared/index";
 import { AuthService } from "../../user/auth.service";
 import { VoterService } from "./voter.service";
 import { faFire } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,7 @@ import { faFire } from "@fortawesome/free-solid-svg-icons";
   styles: []
 })
 export class SessionListComponent implements OnChanges {
+  @Input() event : IEvent;
   @Input() sessions: ISession[];
   @Input() filterBy: string;
   @Input() sortBy: string;
@@ -40,14 +41,16 @@ export class SessionListComponent implements OnChanges {
     }
   }
 
-  toggleVote(session: ISession) {
+  async toggleVote(session: ISession) {
     if (this.userHasVoted(session)) {
-      this.voterService.deleteVoter(
+      await this.voterService.deleteVoter(
+        this.event,
         session,
         this.authService.currentUser.userName
       );
     } else {
-      this.voterService.addVoter(
+      await this.voterService.addVoter(
+        this.event,
         session,
         this.authService.currentUser.userName
       );

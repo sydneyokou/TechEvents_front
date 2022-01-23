@@ -1,16 +1,24 @@
 import { Injectable } from "@angular/core";
 import { IUser } from "./user.model";
+import { environment } from "src/environments/environment";
 
 @Injectable()
 export class AuthService {
   currentUser: IUser;
+  users = environment.users;
   loginUser(userName: string, password: string) {
-    this.currentUser = {
-      id: 1,
-      userName: userName,
-      firstName: "Sydney",
-      lastName: "Okou"
+    
+    for (let user of this.users){
+      if(user.userName == userName && user.password == password){
+        this.currentUser = user;
+      }
+    }
+    if (!this.currentUser){
+      alert("Invalid user or password");
     };
+
+
+
   }
 
   isAuthenticated() {
@@ -20,5 +28,7 @@ export class AuthService {
   updateCurrentUser(firstName: string, lastName: string) {
     this.currentUser.firstName = firstName;
     this.currentUser.lastName = lastName;
+    
+    
   }
 }

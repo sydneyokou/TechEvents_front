@@ -42,7 +42,13 @@ export class EventDetailsComponent implements OnInit {
     this.addMode = true;
   }
 
-  saveNewSession(session: ISession) {
+  update(){
+     return new Promise<void>((resolve)=> {
+      this.eventService.updateEvent(this.event, this.event.id).subscribe(response => {console.log(response); resolve()}, (error) => {alert(error.message); resolve()});
+    })
+  }
+
+  async saveNewSession(session: ISession) {
     if(this.event.sessions != null){
       const lastId = Math.max.apply(
         null,
@@ -55,7 +61,7 @@ export class EventDetailsComponent implements OnInit {
       this.event.sessions = [session];
     }
     
-    this.eventService.updateEvent(this.event).subscribe(response => {console.log(response)}, (error) => alert(error.message));
+    await this.update();
 
     this.addMode = false;
   }

@@ -22,7 +22,10 @@ export class LoginComponent {
 
   login(formValues) {
     this.authService.loginUser(formValues.userName, formValues.password);
-    this.router.navigate(["events"]);
+    if(this.authService.isAuthenticated()){
+      this.router.navigate(["events"]);
+    }
+    
   }
 
   cancel() {

@@ -8,6 +8,7 @@ import { environment } from "src/environments/environment";
 @Injectable()
 export class EventService {
   private apiServerUrl = environment.apiBaseUrl;
+  events : IEvent[];
   constructor(private http:HttpClient){};
 
   getEvents(): Observable<IEvent[]> {
@@ -20,8 +21,8 @@ export class EventService {
       
   }
 
-  updateEvent(event : IEvent): Observable<IEvent> {
-     return this.http.put<IEvent>(`${this.apiServerUrl}/api/v1/events/update`, event);
+  updateEvent(event : IEvent, id : string): Observable<IEvent> {
+     return this.http.put<IEvent>(`${this.apiServerUrl}/api/v1/events/update/${id}`, event);
   }
 
   getEvent(id: String): Observable<IEvent> {
@@ -33,32 +34,39 @@ export class EventService {
       return this.http.delete<void>(`${this.apiServerUrl}/api/v1/events/delete/${id.toString()}`);
   }
 
-  searchSessions(searchTerm: string) {
+  searchEvents(){
+    return new Promise<void>((resolve, reject) => {
+      this.getEvents().subscribe(
+        response => {
+          this.events = response;
+          resolve();
+        }, 
+        (error) => {alert(error.message); resolve()});
+
+    })
+  }
+
+  async searchSessions(searchTerm: string) {
     var term = searchTerm.toLocaleLowerCase();
     var results: ISession[] = [];
-    
-    this.getEvents().subscribe((response) => 
-      {
-        response.forEach((event) => {
-          var matchingSessions = event.sessions.filter(
-            (session) => session.name.toLocaleLowerCase().indexOf(term) > -1
-          );
-          matchingSessions = matchingSessions.map((session: any) => {
-            session.eventId = event.id;
-            return session;
-          });
-          results = results.concat(matchingSessions);
-        });
-      }
-    );
+
+    await this.searchEvents();
     
 
-    var emitter = new EventEmitter(true); //we want searchSession() to return an observable
-    setTimeout(() => {
-      // we want to simulate a delay of http request responding
-      emitter.emit(results);
-    }, 100);
-    return emitter;
+    this.events.forEach((event) => {
+      var matchingSessions = event.sessions.filter(
+        (session) => session.name.toLocaleLowerCase().indexOf(term) > -1
+      );
+      matchingSessions = matchingSessions.map((session: any) => {
+        session.eventId = event.id;
+        return session;
+      });
+      results = results.concat(matchingSessions);
+    });
+
+
+
+    return results;
   }
   
 
